@@ -1,0 +1,762 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>On Hub - Freemium Key System</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;600;700;800;900&family=JetBrains+Mono:wght@600;700;800&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Plus Jakarta Sans', -apple-system, sans-serif;
+            -webkit-tap-highlight-color: transparent;
+            user-select: none;
+        }
+
+        body {
+            background-color: #080603;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 16px;
+            overflow-x: hidden;
+            position: relative;
+            background-image: 
+                radial-gradient(circle at 50% 0%, rgba(245, 158, 11, 0.22) 0%, transparent 60%),
+                radial-gradient(circle at 10% 90%, rgba(217, 119, 6, 0.15) 0%, transparent 50%),
+                radial-gradient(circle at 90% 80%, rgba(251, 191, 36, 0.15) 0%, transparent 50%);
+        }
+
+        /* Ambient Glow Effect */
+        .ambient-glow {
+            position: fixed;
+            width: 360px;
+            height: 360px;
+            border-radius: 50%;
+            filter: blur(110px);
+            opacity: 0.25;
+            pointer-events: none;
+            z-index: 0;
+        }
+        .glow-1 { top: -70px; left: -70px; background: #F59E0B; }
+        .glow-2 { bottom: -70px; right: -70px; background: #D97706; }
+
+        /* Màn Hình Từ Chối Truy Cập */
+        .denied-container {
+            width: 100%;
+            max-width: 420px;
+            text-align: center;
+            padding: 40px 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            z-index: 20;
+            animation: fadeIn 0.4s ease-out;
+        }
+
+        .denied-title {
+            color: #EF4444;
+            font-size: 21px;
+            font-weight: 800;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            margin-bottom: 16px;
+            letter-spacing: -0.3px;
+        }
+
+        .denied-desc {
+            color: #A8A29E;
+            font-size: 13.5px;
+            line-height: 1.6;
+            margin-bottom: 20px;
+            font-weight: 500;
+        }
+
+        .denied-action {
+            color: #FBBF24;
+            font-size: 13.5px;
+            font-weight: 700;
+            line-height: 1.6;
+        }
+
+        /* Khung Chính On Hub */
+        .hub-card {
+            width: 100%;
+            max-width: 410px;
+            background: linear-gradient(180deg, rgba(22, 17, 10, 0.97) 0%, rgba(12, 9, 5, 0.99) 100%);
+            border-radius: 28px;
+            padding: 24px 20px;
+            position: relative;
+            z-index: 10;
+            box-shadow: 0 25px 65px rgba(0, 0, 0, 0.9), 0 0 40px rgba(245, 158, 11, 0.22);
+            animation: cardEntrance 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        }
+
+        @keyframes cardEntrance {
+            from { opacity: 0; transform: translateY(20px) scale(0.96); }
+            to { opacity: 1; transform: translateY(0) scale(1); }
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: scale(0.95); }
+            to { opacity: 1; transform: scale(1); }
+        }
+
+        /* Viền Vàng Kim Loại Chuyển Động */
+        .hub-card::before {
+            content: '';
+            position: absolute;
+            top: -2px; left: -2px; right: -2px; bottom: -2px;
+            background: linear-gradient(135deg, #FFE066, #F59E0B, #B45309, #FFFBEB, #D97706, #FBBF24);
+            border-radius: 30px;
+            z-index: -1;
+            opacity: 0.95;
+            background-size: 300% 300%;
+            animation: gradientGold 5s ease infinite;
+        }
+
+        @keyframes gradientGold {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        /* Logo Icon */
+        .logo-wrapper {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 14px;
+        }
+        .logo-box {
+            width: 66px;
+            height: 66px;
+            background: linear-gradient(145deg, #2A2011, #161007);
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 2px solid rgba(251, 191, 36, 0.55);
+            box-shadow: 0 0 25px rgba(245, 158, 11, 0.45), inset 0 0 15px rgba(251, 191, 36, 0.25);
+            font-size: 32px;
+            animation: floatIcon 3.5s ease-in-out infinite;
+        }
+        @keyframes floatIcon {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-5px); }
+        }
+
+        /* Tiêu Đề On Hub */
+        .hub-header {
+            text-align: center;
+            margin-bottom: 18px;
+        }
+        .hub-title {
+            font-size: 26px;
+            font-weight: 900;
+            background: linear-gradient(135deg, #FFFBEB 0%, #FDE68A 40%, #F59E0B 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            letter-spacing: -0.5px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+        .hub-subtitle {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 13px;
+            color: #FBBF24;
+            margin-top: 3px;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+        }
+
+        /* Hàng Trạng Thái */
+        .status-row {
+            background: rgba(30, 23, 13, 0.75);
+            border: 1px solid rgba(245, 158, 11, 0.25);
+            border-radius: 14px;
+            padding: 11px 14px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 10px;
+        }
+        .status-label {
+            font-size: 12.5px;
+            color: #D6D3D1;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .status-badge {
+            background: rgba(245, 158, 11, 0.15);
+            color: #FBBF24;
+            border: 1px solid rgba(245, 158, 11, 0.45);
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-size: 11.5px;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .status-dot {
+            width: 7px;
+            height: 7px;
+            background: #FBBF24;
+            border-radius: 50%;
+            box-shadow: 0 0 10px #F59E0B;
+            animation: pulseDot 1.5s infinite;
+        }
+        @keyframes pulseDot {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.4; transform: scale(0.75); }
+        }
+
+        /* Grid 2 Cột */
+        .grid-info {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin-bottom: 16px;
+        }
+        .info-card {
+            background: rgba(30, 23, 13, 0.75);
+            border: 1px solid rgba(245, 158, 11, 0.2);
+            border-radius: 14px;
+            padding: 10px 12px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            font-size: 12px;
+        }
+        .info-card .label { color: #A8A29E; font-weight: 600; }
+        .info-card .val {
+            font-weight: 800;
+            color: #FEF3C7;
+        }
+        .info-card .val.highlight {
+            background: linear-gradient(135deg, #F59E0B, #D97706);
+            color: #1C1917;
+            padding: 2px 7px;
+            border-radius: 6px;
+            font-size: 11px;
+            font-weight: 900;
+        }
+
+        /* Khung Key */
+        .key-section {
+            background: rgba(26, 20, 11, 0.88);
+            border: 1px solid rgba(251, 191, 36, 0.35);
+            border-radius: 18px;
+            padding: 16px;
+            margin-bottom: 16px;
+            box-shadow: inset 0 0 20px rgba(0, 0, 0, 0.5);
+        }
+        .key-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 10px;
+        }
+        .key-title {
+            font-size: 12px;
+            font-weight: 800;
+            color: #FEF3C7;
+            letter-spacing: 0.5px;
+        }
+        .key-badge-status {
+            font-size: 10.5px;
+            font-weight: 700;
+            padding: 3px 8px;
+            border-radius: 6px;
+            background: rgba(168, 162, 158, 0.15);
+            color: #A8A29E;
+            border: 1px solid rgba(168, 162, 158, 0.3);
+            transition: all 0.3s;
+        }
+        .key-badge-status.active {
+            background: rgba(245, 158, 11, 0.2);
+            color: #FDE68A;
+            border-color: rgba(245, 158, 11, 0.5);
+        }
+
+        /* Hộp Hiển Thị Key */
+        .key-display-box {
+            background: #0E0A05;
+            border: 1.5px solid #292013;
+            border-radius: 12px;
+            padding: 12px 14px;
+            text-align: center;
+            margin-bottom: 12px;
+            transition: all 0.35s ease;
+        }
+        .key-display-box.unlocked {
+            border-color: #F59E0B;
+            background: #1C1409;
+            box-shadow: 0 0 22px rgba(245, 158, 11, 0.35);
+        }
+        .key-text {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 14.5px;
+            font-weight: 800;
+            color: #78716C;
+            letter-spacing: 1px;
+            transition: all 0.3s;
+            word-break: break-all;
+        }
+        .key-text.unlocked {
+            color: #FDE68A;
+            text-shadow: 0 0 14px rgba(245, 158, 11, 0.7);
+        }
+
+        /* Nút Bấm Vàng Gold */
+        .btn-action {
+            width: 100%;
+            height: 46px;
+            border: none;
+            border-radius: 12px;
+            font-size: 12.5px;
+            font-weight: 900;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+            background: linear-gradient(90deg, #FDE68A 0%, #F59E0B 50%, #D97706 100%);
+            color: #1C1917;
+            box-shadow: 0 4px 18px rgba(245, 158, 11, 0.45);
+        }
+        .btn-action:active {
+            transform: scale(0.97);
+        }
+        .btn-action.copied {
+            background: linear-gradient(90deg, #10B981 0%, #059669 100%);
+            color: #FFFFFF;
+            box-shadow: 0 4px 18px rgba(16, 185, 129, 0.45);
+        }
+
+        /* Khung Script */
+        .script-section {
+            background: rgba(26, 20, 11, 0.88);
+            border: 1px solid rgba(245, 158, 11, 0.25);
+            border-radius: 18px;
+            padding: 14px 16px;
+            margin-bottom: 14px;
+        }
+        .script-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 8px;
+        }
+        .script-title {
+            font-size: 11.5px;
+            font-weight: 800;
+            color: #FDE68A;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        .btn-copy-script {
+            background: none;
+            border: none;
+            color: #FBBF24;
+            font-size: 11px;
+            font-weight: 700;
+            cursor: pointer;
+            text-decoration: underline;
+            padding: 2px 4px;
+            transition: color 0.2s;
+        }
+        .btn-copy-script:hover { color: #FFE066; }
+
+        .script-code-box {
+            background: #0E0A05;
+            border: 1px solid #292013;
+            border-radius: 10px;
+            padding: 10px 12px;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 10px;
+            color: #E7E5E4;
+            line-height: 1.45;
+            word-break: break-all;
+            user-select: all;
+        }
+        .script-code-box .keyword { color: #F43F5E; }
+        .script-code-box .string { color: #FBBF24; }
+
+        /* Nút Bật Tắt Âm Thanh */
+        .sfx-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 4px 4px 12px 4px;
+        }
+        .sfx-label {
+            font-size: 11.5px;
+            color: #A8A29E;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .sfx-toggle-btn {
+            background: rgba(30, 23, 13, 0.8);
+            border: 1px solid rgba(245, 158, 11, 0.35);
+            color: #FEF3C7;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 11px;
+            font-weight: 700;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            transition: all 0.2s;
+        }
+        .sfx-toggle-btn.active {
+            border-color: #F59E0B;
+            color: #FDE68A;
+            box-shadow: 0 0 12px rgba(245, 158, 11, 0.3);
+        }
+
+        .footer-note {
+            text-align: center;
+            font-size: 11px;
+            color: #78716C;
+            font-weight: 600;
+        }
+
+        /* Toast Thông Báo */
+        .toast-notification {
+            position: fixed;
+            bottom: -90px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: linear-gradient(135deg, #241A0B, #140E05);
+            border: 1.5px solid #F59E0B;
+            color: #FFFBEB;
+            padding: 12px 22px;
+            border-radius: 30px;
+            font-size: 12px;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            box-shadow: 0 10px 35px rgba(245, 158, 11, 0.4);
+            z-index: 100;
+            transition: all 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
+            pointer-events: none;
+            white-space: nowrap;
+        }
+        .toast-notification.show {
+            bottom: 24px;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="ambient-glow glow-1"></div>
+    <div class="ambient-glow glow-2"></div>
+
+    <div class="denied-container" id="accessDeniedScreen" style="display: none;">
+        <h1 class="denied-title">⚠️ TRUY CẬP BỊ TỪ CHỐI</h1>
+        <p class="denied-desc">Liên kết đã hết hạn hoặc bạn đang vào từ Lịch sử / Bookmark.</p>
+        <p class="denied-action">Vui lòng mở lại Roblox Script và bấm "LẤY KEY NGAY" để vượt link!</p>
+    </div>
+
+    <div class="hub-card" id="mainHubScreen" style="display: none;">
+        <div class="logo-wrapper">
+            <div class="logo-box">👑</div>
+        </div>
+
+        <div class="hub-header">
+            <div class="hub-title">On Hub</div>
+            <div class="hub-subtitle">script : onhub freemium</div>
+        </div>
+
+        <div class="status-row">
+            <div class="status-label">🔑 Trạng Thái Key:</div>
+            <div class="status-badge">
+                <div class="status-dot"></div>
+                Đang Hoạt Động
+            </div>
+        </div>
+
+        <div class="grid-info">
+            <div class="info-card">
+                <span class="label">Đổi Key:</span>
+                <span class="val highlight">00:00 Hàng Ngày</span>
+            </div>
+            <div class="info-card">
+                <span class="label">Múi giờ:</span>
+                <span class="val">GMT+7 (VN)</span>
+            </div>
+        </div>
+
+        <div class="key-section">
+            <div class="key-header">
+                <span class="key-title">MÃ KEY HÔM NAY:</span>
+                <span class="key-badge-status" id="keyBadgeStatus">Chưa nhận</span>
+            </div>
+
+            <div class="key-display-box" id="keyDisplayBox">
+                <div class="key-text" id="keyText">•••••••••••••••••••••••••••••</div>
+            </div>
+
+            <button class="btn-action" id="btnAction" onclick="handleKeyAction()">
+                <span id="btnIcon">✨</span>
+                <span id="btnText">NHẬN KEY NGAY</span>
+            </button>
+        </div>
+
+        <div class="script-section">
+            <div class="script-header">
+                <span class="script-title">⚡ SCRIPT ON HUB</span>
+                <button class="btn-copy-script" onclick="copyScriptCode()">Sao chép Script</button>
+            </div>
+            <div class="script-code-box" id="scriptCode">
+                <span class="keyword">loadstring</span>(game:HttpGet(<span class="string">"https://raw.githubusercontent.com/robvxs24/freemium/refs/heads/main/script.lua"</span>))()
+            </div>
+        </div>
+
+        <div class="sfx-row">
+            <div class="sfx-label">🔔 Hiệu ứng âm thanh SFX:</div>
+            <button class="sfx-toggle-btn active" id="sfxToggle" onclick="toggleSFX()">
+                <span id="sfxState">Bật 🟢</span>
+            </button>
+        </div>
+
+        <div class="footer-note">
+            Nhập Key vào Script trong game để kích hoạt tự động!
+        </div>
+    </div>
+
+    <div class="toast-notification" id="toast">
+        <span id="toastIcon">👑</span>
+        <span id="toastMsg">Đã nhận thành công Key On Hub hôm nay!</span>
+    </div>
+        <script>
+        // =========================================================================
+        //  1. CƠ CHẾ XÁC THỰC MẬT KHẨU & CHỐNG LƯU LỊCH SỬ TRÌNH DUYỆT
+        // =========================================================================
+        const VALID_PASSWORDS = ["onhub2026", "freemium2026", "lennon2026", "omg2026"];
+        const urlParams = new URLSearchParams(window.location.search);
+        const pass = urlParams.get('pass');
+
+        // Dọn sạch dữ liệu cũ tránh lỗi khóa vĩnh viễn
+        localStorage.removeItem("LennonHub_Pass_Used");
+        localStorage.removeItem("OnHub_Pass_Used");
+
+        if (pass && VALID_PASSWORDS.includes(pass)) {
+            // HỢP LỆ: Vừa vượt link rút gọn xong
+            document.getElementById('mainHubScreen').style.display = 'block';
+            document.getElementById('accessDeniedScreen').style.display = 'none';
+
+            // Xóa tham số ?pass=... khỏi URL để ngăn lưu vào Bookmark/Lịch sử
+            window.history.replaceState({}, document.title, window.location.pathname);
+        } else {
+            // KHÔNG HỢP LỆ: Vào từ Lịch sử / Bookmark hoặc F5 tải lại khi mất tham số
+            document.getElementById('accessDeniedScreen').style.display = 'flex';
+            document.getElementById('mainHubScreen').style.display = 'none';
+        }
+
+        // =========================================================================
+        //  2. HIỆU ỨNG ÂM THANH SFX (WEB AUDIO API)
+        // =========================================================================
+        let isKeyUnlocked = false;
+        let generatedKey = "";
+        let isSfxEnabled = true;
+
+        const AudioContext = window.AudioContext || window.webkitAudioContext;
+        let audioCtx = null;
+
+        function initAudio() {
+            if (!audioCtx) audioCtx = new AudioContext();
+            if (audioCtx.state === 'suspended') audioCtx.resume();
+        }
+
+        function playSound(type) {
+            if (!isSfxEnabled) return;
+            try {
+                initAudio();
+                const osc = audioCtx.createOscillator();
+                const gain = audioCtx.createGain();
+                osc.connect(gain);
+                gain.connect(audioCtx.destination);
+
+                const now = audioCtx.currentTime;
+
+                if (type === 'click') {
+                    osc.type = 'sine';
+                    osc.frequency.setValueAtTime(600, now);
+                    osc.frequency.exponentialRampToValueAtTime(250, now + 0.08);
+                    gain.gain.setValueAtTime(0.2, now);
+                    gain.gain.linearRampToValueAtTime(0, now + 0.08);
+                    osc.start(now);
+                    osc.stop(now + 0.08);
+                } else if (type === 'generate') {
+                    osc.type = 'triangle';
+                    osc.frequency.setValueAtTime(280, now);
+                    osc.frequency.linearRampToValueAtTime(850, now + 0.25);
+                    gain.gain.setValueAtTime(0.22, now);
+                    gain.gain.linearRampToValueAtTime(0, now + 0.25);
+                    osc.start(now);
+                    osc.stop(now + 0.25);
+                } else if (type === 'success') {
+                    osc.type = 'sine';
+                    osc.frequency.setValueAtTime(523.25, now);
+                    osc.frequency.setValueAtTime(659.25, now + 0.08);
+                    osc.frequency.setValueAtTime(783.99, now + 0.16);
+                    osc.frequency.setValueAtTime(1046.50, now + 0.24);
+                    gain.gain.setValueAtTime(0.25, now);
+                    gain.gain.linearRampToValueAtTime(0, now + 0.38);
+                    osc.start(now);
+                    osc.stop(now + 0.38);
+                }
+            } catch (e) {}
+        }
+
+        function toggleSFX() {
+            isSfxEnabled = !isSfxEnabled;
+            const btn = document.getElementById('sfxToggle');
+            const txt = document.getElementById('sfxState');
+            if (isSfxEnabled) {
+                btn.classList.add('active');
+                txt.innerText = "Bật 🟢";
+                playSound('click');
+            } else {
+                btn.classList.remove('active');
+                txt.innerText = "Tắt 🔴";
+            }
+        }
+
+        // =========================================================================
+        //  3. THUẬT TOÁN ĐỔI KEY HÀNG NGÀY: onhubfreemium-XXXX-YYYY-ZZZZ (GMT+7)
+        // =========================================================================
+        function getVietnamDate() {
+            const now = new Date();
+            const utc = now.getTime() + (now.getTimezoneOffset() * 60000);
+            return new Date(utc + (3600000 * 7));
+        }
+
+        function calculateTodayKey() {
+            const vnDate = getVietnamDate();
+            const day = vnDate.getDate();
+            const month = vnDate.getMonth() + 1;
+            const year = vnDate.getFullYear();
+
+            // Cấu trúc thuật toán mã hóa cho On Hub Freemium
+            const val1 = (day * 3141 + month * 2718 + year * 89) % 65535;
+            const val2 = (day * 5821 + month * 4111 + year * 193) % 65535;
+            const val3 = (day * 7333 + month * 6177 + year * 257) % 65535;
+
+            const hex1 = val1.toString(16).toUpperCase().padStart(4, '0');
+            const hex2 = val2.toString(16).toUpperCase().padStart(4, '0');
+            const hex3 = val3.toString(16).toUpperCase().padStart(4, '0');
+
+            return `onhubfreemium-${hex1}-${hex2}-${hex3}`;
+        }
+
+        function copyToClipboard(text) {
+            if (navigator.clipboard && window.isSecureContext) {
+                return navigator.clipboard.writeText(text).catch(() => fallbackCopyText(text));
+            } else {
+                fallbackCopyText(text);
+                return Promise.resolve();
+            }
+        }
+
+        function fallbackCopyText(text) {
+            const textArea = document.createElement("textarea");
+            textArea.value = text;
+            textArea.style.position = "fixed";
+            textArea.style.left = "-999999px";
+            textArea.style.top = "-999999px";
+            document.body.appendChild(textArea);
+            textArea.focus();
+            textArea.select();
+            try { document.execCommand('copy'); } catch (err) {}
+            document.body.removeChild(textArea);
+        }
+
+        function showToast(msg, icon = '👑') {
+            const toast = document.getElementById('toast');
+            document.getElementById('toastMsg').innerText = msg;
+            document.getElementById('toastIcon').innerText = icon;
+            toast.classList.add('show');
+            setTimeout(() => toast.classList.remove('show'), 3000);
+        }
+
+        function handleKeyAction() {
+            const btn = document.getElementById('btnAction');
+            const btnIcon = document.getElementById('btnIcon');
+            const btnText = document.getElementById('btnText');
+            const keyText = document.getElementById('keyText');
+            const keyDisplayBox = document.getElementById('keyDisplayBox');
+            const badge = document.getElementById('keyBadgeStatus');
+
+            if (!isKeyUnlocked) {
+                playSound('generate');
+                btn.style.pointerEvents = 'none';
+                btnText.innerText = "ĐANG TẠO KEY...";
+                btnIcon.innerText = "⏳";
+
+                setTimeout(() => {
+                    generatedKey = calculateTodayKey();
+                    isKeyUnlocked = true;
+
+                    keyText.innerText = generatedKey;
+                    keyText.classList.add('unlocked');
+                    keyDisplayBox.classList.add('unlocked');
+
+                    badge.innerText = "Đã lấy ✓";
+                    badge.classList.add('active');
+
+                    btnIcon.innerText = "📋";
+                    btnText.innerText = "SAO CHÉP KEY VÀO BỘ NHỚ TẠM";
+                    btn.style.pointerEvents = 'auto';
+
+                    playSound('success');
+                    showToast("Đã nhận thành công Key On Hub hôm nay!", "👑");
+                }, 450);
+            } else {
+                playSound('click');
+                copyToClipboard(generatedKey);
+                playSound('success');
+                btn.classList.add('copied');
+                btnIcon.innerText = "✔";
+                btnText.innerText = "ĐÃ SAO CHÉP MÃ KEY!";
+                showToast("Đã sao chép mã Key vào bộ nhớ tạm!", "📋");
+
+                setTimeout(() => {
+                    btn.classList.remove('copied');
+                    btnIcon.innerText = "📋";
+                    btnText.innerText = "SAO CHÉP KEY VÀO BỘ NHỚ TẠM";
+                }, 2500);
+            }
+        }
+
+        function copyScriptCode() {
+            playSound('click');
+            const rawScript = 'loadstring(game:HttpGet("https://raw.githubusercontent.com/robvxs24/freemium/refs/heads/main/script.lua"))()';
+            copyToClipboard(rawScript);
+            playSound('success');
+            showToast("Đã sao chép Script On Hub thành công!", "⚡");
+        }
+    </script>
+</body>
+</html>
