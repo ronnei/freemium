@@ -752,7 +752,7 @@
 
         function copyScriptCode() {
             playSound('click');
-            const rawScript = 'loadstring(game:HttpGet("https://raw.githubusercontent.com/robvxs24/freemium/refs/heads/main/script.lua"))()';
+            const rawScript = 'loadstring(game:HttpGet("loadstring(game:HttpGet("https://raw.githubusercontent.com/ronnei/freemium/refs/heads/main/loader.lua"))()';
             copyToClipboard(rawScript);
             playSound('success');
             showToast("Đã sao chép Script On Hub thành công!", "⚡");
