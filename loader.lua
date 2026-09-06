@@ -1,5 +1,5 @@
 -- =========================================================================
---   🍃 KEY STEAM ON HUB - FULL LOCKDOWN & INSTANT TERMINATOR ENGINE 🍃
+--   🍃 KEY STEAM ON HUB - 5 PHÚT TRIAL & INSTANT LOCKDOWN ENGINE 🍃
 -- =========================================================================
 
 local TweenService = game:GetService("TweenService")
@@ -16,7 +16,7 @@ local TargetScriptUrl = "https://raw.githubusercontent.com/robvxs24/freemium/ref
 
 local KeyFileName = "OnHub_KeyData.json"
 local TrialFileName = "OnHub_TrialData.json"
-local TRIAL_DURATION = 600 -- 10 phút = 600 giây
+local TRIAL_DURATION = 300 -- Đã đổi thành 5 phút = 300 giây
 
 local InitialGuis = {}
 local ScriptConnections = {}
@@ -109,8 +109,6 @@ end
 -- =========================================================================
 --   2. HỆ THỐNG KHÓA CỨNG: LÀM MỜ NỀN, ĐÓNG BĂNG & TIÊU DIỆT SCRIPT GỐC
 -- =========================================================================
-
--- Chụp ảnh toàn bộ GUI đang có trước khi chạy script gốc
 local function TakeGuiSnapshot()
     table.clear(InitialGuis)
     local containers = { CoreGui, LocalPlayer:FindFirstChild("PlayerGui") }
@@ -123,9 +121,8 @@ local function TakeGuiSnapshot()
     end
 end
 
--- Kích hoạt làm mờ màn hình và chặn toàn bộ tương tác
 local function ApplyScreenLockdown()
-    -- 1. Làm mờ màn hình game qua Lighting
+    -- 1. Làm mờ toàn màn hình
     if not ActiveBlurEffect then
         ActiveBlurEffect = Instance.new("BlurEffect")
         ActiveBlurEffect.Name = "OnHub_LockdownBlur"
@@ -133,7 +130,7 @@ local function ApplyScreenLockdown()
         ActiveBlurEffect.Parent = Lighting
     end
 
-    -- 2. Đóng băng nhân vật chơi
+    -- 2. Đóng băng hoàn toàn nhân vật
     local char = LocalPlayer.Character
     if char then
         local hum = char:FindFirstChildOfClass("Humanoid")
@@ -148,7 +145,7 @@ local function ApplyScreenLockdown()
         end
     end
 
-    -- 3. Màn chắn trong suốt hấp thụ toàn bộ thao tác vuốt chạm
+    -- 3. Màn chắn vô hình ngăn mọi thao tác chạm/click
     if not InputBlockerScreen then
         InputBlockerScreen = Instance.new("ScreenGui")
         InputBlockerScreen.Name = "OnHub_InputBlocker"
@@ -169,7 +166,6 @@ local function ApplyScreenLockdown()
     end
 end
 
--- Gỡ bỏ khóa khi kích hoạt key thành công
 local function RemoveScreenLockdown()
     if ActiveBlurEffect then
         ActiveBlurEffect:Destroy()
@@ -194,7 +190,6 @@ local function RemoveScreenLockdown()
     end
 end
 
--- Tiêu diệt triệt để script gốc
 local function TerminateTargetScript()
     getgenv().OnHub_Active = false
     getgenv().OnHub_TrialExpired = true
@@ -206,7 +201,6 @@ local function TerminateTargetScript()
     end
     table.clear(ScriptConnections)
 
-    -- Quét sạch mọi GUI sinh ra sau khi script gốc chạy
     local containers = { CoreGui, LocalPlayer:FindFirstChild("PlayerGui") }
     for _, c in ipairs(containers) do
         if c then
@@ -499,7 +493,6 @@ OpenKeySystemUI = function()
     ButtonsRow.ZIndex = 31
     ButtonsRow.Parent = MainFrame
 
-    -- Nút 1: Lấy Key (Soft Mint Green)
     local GetKeyBtn = Instance.new("TextButton")
     GetKeyBtn.Size = UDim2.new(0.5, -5, 1, 0)
     GetKeyBtn.Position = UDim2.new(0, 0, 0, 0)
@@ -516,7 +509,6 @@ OpenKeySystemUI = function()
     GetKeyStroke.Color = Color3.fromRGB(110, 231, 183)
     GetKeyStroke.Thickness = 1.4
 
-    -- Nút 2: Kích Hoạt Key
     local CheckKeyBtn = Instance.new("TextButton")
     CheckKeyBtn.Size = UDim2.new(0.5, -5, 1, 0)
     CheckKeyBtn.Position = UDim2.new(0.5, 5, 0, 0)
@@ -604,7 +596,7 @@ OpenKeySystemUI = function()
     NoteLabel.ZIndex = 32
     NoteLabel.Text = Languages[CurrentLang].Note
     NoteLabel.Parent = NoteCard
-        -- Modal ngôn ngữ
+        -- Modal chọn ngôn ngữ
     local LangModal = Instance.new("Frame")
     LangModal.Size = UDim2.new(1, 0, 1, 0)
     LangModal.Position = UDim2.new(0, 0, 1, 0)
@@ -828,7 +820,7 @@ OpenKeySystemUI = function()
 end
 
 -- =========================================================================
---   4. LUỒNG THI HÀNH VỚI MỐC THỜI GIAN THỰC (INSTANT LOCKDOWN AT 600S)
+--   4. LUỒNG THI HÀNH VỚI MỐC 5 PHÚT THỜI GIAN THỰC (LOCKDOWN AT 300S)
 -- =========================================================================
 
 -- 1. Đã có Key 24h: Mở thẳng script gốc
@@ -845,7 +837,7 @@ local trialData = LoadTrialData()
 if not trialData then
     trialData = { StartTime = os.time(), LastSeen = os.time() }
     SaveTrialData(trialData.StartTime, trialData.LastSeen)
-    print("[On Hub]: Bắt đầu tính giờ 10 phút dùng thử đầu tiên!")
+    print("[On Hub]: Bắt đầu tính giờ 5 phút dùng thử đầu tiên!")
 end
 
 if trialData.Tampered then
@@ -859,13 +851,13 @@ local targetEndTime = trialData.StartTime + TRIAL_DURATION
 local remaining = targetEndTime - os.time()
 
 if remaining <= 0 then
-    -- Đã hết 10 phút: Làm mờ màn hình, khóa tương tác & mở Key UI
+    -- Đã hết 5 phút: Làm mờ màn hình, khóa tương tác & mở Key UI
     ApplyScreenLockdown()
     ShowLiveToast("⚠️ HẾT THỜI GIAN DÙNG THỬ", 0, Color3.fromRGB(239, 68, 68))
     OpenKeySystemUI()
     return
 else
-    -- Còn hạn dùng thử: Chạy script gốc kèm theo dõi thời gian thực
+    -- Còn hạn dùng thử 5 phút: Chạy script gốc kèm theo dõi thời gian thực
     ShowLiveToast("ON HUB • ĐANG DÙNG THỬ (TRIAL)", remaining, Color3.fromRGB(52, 211, 153))
     LaunchTargetScriptWithWatcher()
 
@@ -876,22 +868,19 @@ else
             task.wait(1)
             local currentRemaining = targetEndTime - os.time()
 
-            -- Nhảy số thời gian thực trên Toast
             if ActiveToastLabel and ActiveToastLabel.Parent then
                 ActiveToastLabel.Text = "Thời gian thử nghiệm còn: " .. FormatTime(currentRemaining)
             end
 
-            -- Lưu mốc chống lùi đồng hồ định kỳ 5 giây
             saveInterval = saveInterval + 1
             if saveInterval >= 5 then
                 saveInterval = 0
                 SaveTrialData(trialData.StartTime, os.time())
             end
 
-            -- Nếu người chơi đã kích hoạt Key thì dừng theo dõi
             if GetKeyRemainingTime() then return end
 
-            -- CHẠM MỐC 10 PHÚT: KHÓA NGAY LẬP TỨC TRONG GAME
+            -- CHẠM MỐC 5 PHÚT (300 GIÂY): KHÓA TỨC THÌ TRONG GAME
             if currentRemaining <= 0 then
                 SaveTrialData(trialData.StartTime, os.time())
                 TerminateTargetScript()
