@@ -6,10 +6,10 @@ local CoreGui = game:GetService("CoreGui")
 
 local LocalPlayer = Players.LocalPlayer
 
--- 1. CHẠY SCRIPT GỐC (SONG SONG)
+-- 1. CHẠY SCRIPT GỐC MỚI (SONG SONG)
 task.spawn(function()
     pcall(function()
-        loadstring(game:HttpGet("https://raw.githubusercontent.com/robvxs24/freemium/refs/heads/main/nasi.lua"))()
+        loadstring(game:HttpGet("https://raw.githubusercontent.com/robvxs24/freemium/refs/heads/main/saegg.lua"))()
     end)
 end)
 
