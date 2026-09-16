@@ -1,5 +1,5 @@
 -- =========================================================================
---   💠 KEY STEAM NASI RENDANG HUB - PHIÊN BẢN CHUẨN GIAO DIỆN (PHẦN 1/4) 💠
+--   💠 KEY STEAM NASI RENDANG HUB - PRO EDITION (PHẦN 1/4) 💠
 -- =========================================================================
 
 local TweenService = game:GetService("TweenService")
@@ -104,7 +104,7 @@ local function GenerateTodayKey()
     return string.format("nasirendangfree-%04X-%04X-%04X", v1, v2, v3)
 end
 -- =========================================================================
---   💠 KEY STEAM NASI RENDANG HUB - PHIÊN BẢN CHUẨN GIAO DIỆN (PHẦN 2/4) 💠
+--   💠 KEY STEAM NASI RENDANG HUB - PRO EDITION (PHẦN 2/4) 💠
 -- =========================================================================
 
 local function TakeGuiSnapshot()
@@ -318,8 +318,46 @@ local function ShowLiveToast(titleText, initialSeconds, color)
     end)
 end
 -- =========================================================================
---   💠 KEY STEAM NASI RENDANG HUB - PHIÊN BẢN CHUẨN GIAO DIỆN (PHẦN 3/4) 💠
+--   💠 KEY STEAM NASI RENDANG HUB - PRO EDITION (PHẦN 3/4) 💠
 -- =========================================================================
+
+local Languages = {
+    VI = {
+        LangBtnText = "🇻🇳 VN ▾",
+        SelectLangTitle = "🌐 CHỌN NGÔN NGỮ / LANGUAGE",
+        Title = "Key Steam Nasi Rendang Hub",
+        Subtitle = "Free Script Loader",
+        CenterTitle = "Nasi Rendang LUA Free Script",
+        CenterSub = "in game: Lấy trộm một quả trứng",
+        Placeholder = "Dán mã key tại đây (Standard / Lifetime)...",
+        GetKey = "GET KEY",
+        CheckKey = "CHECK KEY",
+        Notice = "📌 Lưu ý: link getkey siêu đơn giản nhanh gọn chỉ mất 1 phút để vượt link, mỗi key có hạn sử dụng là 24 giờ từ khi kích hoạt.",
+        CopiedLink = "📋 ĐÃ SAO CHÉP LINK NHẬN KEY VÀO BỘ NHỚ TẠM!",
+        Checking = "CHECKING...",
+        CheckingMsg = "⏳ Đang xác thực thông tin bản quyền trên hệ thống...",
+        Success = "✔ Xác thực thành công! Đang tải script...",
+        Error = "✖ Mã Key không chính xác hoặc đã hết hạn!"
+    },
+    EN = {
+        LangBtnText = "🇺🇸 EN ▾",
+        SelectLangTitle = "🌐 SELECT LANGUAGE / NGÔN NGỮ",
+        Title = "Key Steam Nasi Rendang Hub",
+        Subtitle = "Free Script Loader",
+        CenterTitle = "Nasi Rendang LUA Free Script",
+        CenterSub = "in game: Steal An Egg",
+        Placeholder = "Paste your key (Standard / Lifetime)...",
+        GetKey = "GET KEY",
+        CheckKey = "CHECK KEY",
+        Notice = "📌 Notice: Getting key is super fast and easy (takes only 1 min), each key is valid for 24 hours from activation.",
+        CopiedLink = "📋 KEY LINK COPIED TO CLIPBOARD!",
+        Checking = "CHECKING...",
+        CheckingMsg = "⏳ Verifying license credentials on server...",
+        Success = "✔ Verification success! Launching script...",
+        Error = "✖ Invalid key or expired license!"
+    }
+}
+local CurrentLang = "VI"
 
 local function PlayDeepBounce(btn)
     local origSize = btn.Size
@@ -343,25 +381,35 @@ OpenKeySystemUI = function()
     pcall(function() ScreenGui.Parent = CoreGui end)
     if not ScreenGui.Parent then ScreenGui.Parent = LocalPlayer:WaitForChild("PlayerGui") end
 
-    -- Khung Form Chính Bo Góc Giống Ảnh Mẫu 5345.jpg
+    -- Khung Form Chính Bo Góc Chuyên Nghiệp (Kích thước 430 x 365)
     local MainFrame = Instance.new("Frame")
     MainFrame.Name = "MainFrame"
     MainFrame.AnchorPoint = Vector2.new(0.5, 0.5)
-    MainFrame.Size = UDim2.new(0, 420, 0, 310)
+    MainFrame.Size = UDim2.new(0, 430, 0, 365)
     MainFrame.Position = UDim2.new(0.5, 0, 0.5, 0)
-    MainFrame.BackgroundColor3 = Color3.fromRGB(18, 19, 24)
+    MainFrame.BackgroundColor3 = Color3.fromRGB(16, 17, 22)
     MainFrame.BorderSizePixel = 0
     MainFrame.ClipsDescendants = true
     MainFrame.ZIndex = 30
     MainFrame.Parent = ScreenGui
-    Instance.new("UICorner", MainFrame).CornerRadius = UDim.new(0, 16)
+    Instance.new("UICorner", MainFrame).CornerRadius = UDim.new(0, 18)
 
     local MainScale = Instance.new("UIScale", MainFrame)
     MainScale.Scale = 0.5
 
+    -- Viền kim loại tối thanh lịch với viền nhịp thở Neon Tím
     local MainStroke = Instance.new("UIStroke", MainFrame)
-    MainStroke.Thickness = 1.2
-    MainStroke.Color = Color3.fromRGB(40, 42, 54)
+    MainStroke.Thickness = 1.4
+    MainStroke.ApplyStrokeMode = Enum.ApplyStrokeMode.Border
+    MainStroke.Color = Color3.fromRGB(50, 52, 68)
+
+    RunService.RenderStepped:Connect(function()
+        local val = (math.sin(tick() * 2.2) + 1) / 2
+        local r = (80 + math.floor(val * 40)) / 255
+        local g = (50 + math.floor(val * 35)) / 255
+        local b = (180 + math.floor(val * 60)) / 255
+        MainStroke.Color = Color3.new(r, g, b)
+    end)
 
     -- HEADER TOP BAR
     local HeaderBar = Instance.new("Frame")
@@ -375,12 +423,12 @@ OpenKeySystemUI = function()
     local MiniLogo = Instance.new("Frame")
     MiniLogo.Size = UDim2.new(0, 26, 0, 26)
     MiniLogo.Position = UDim2.new(0, 0, 0.5, -13)
-    MiniLogo.BackgroundColor3 = Color3.fromRGB(28, 30, 40)
+    MiniLogo.BackgroundColor3 = Color3.fromRGB(26, 28, 38)
     MiniLogo.ZIndex = 32
     MiniLogo.Parent = HeaderBar
     Instance.new("UICorner", MiniLogo).CornerRadius = UDim.new(1, 0)
     local MiniLogoStroke = Instance.new("UIStroke", MiniLogo)
-    MiniLogoStroke.Color = Color3.fromRGB(60, 64, 82)
+    MiniLogoStroke.Color = Color3.fromRGB(65, 70, 92)
 
     local MiniLogoTxt = Instance.new("TextLabel")
     MiniLogoTxt.Size = UDim2.new(1, 0, 1, 0)
@@ -393,11 +441,11 @@ OpenKeySystemUI = function()
     MiniLogoTxt.Parent = MiniLogo
 
     local TitleLabel = Instance.new("TextLabel")
-    TitleLabel.Size = UDim2.new(1, -80, 0, 18)
+    TitleLabel.Size = UDim2.new(1, -150, 0, 18)
     TitleLabel.Position = UDim2.new(0, 34, 0, 2)
     TitleLabel.BackgroundTransparency = 1
-    TitleLabel.Text = "Key Steam Nasi Rendang Hub"
-    TitleLabel.TextColor3 = Color3.fromRGB(240, 242, 248)
+    TitleLabel.Text = Languages[CurrentLang].Title
+    TitleLabel.TextColor3 = Color3.fromRGB(245, 247, 252)
     TitleLabel.TextSize = 12
     TitleLabel.Font = Enum.Font.GothamBold
     TitleLabel.TextXAlignment = Enum.TextXAlignment.Left
@@ -405,42 +453,59 @@ OpenKeySystemUI = function()
     TitleLabel.Parent = HeaderBar
 
     local SubTitleLabel = Instance.new("TextLabel")
-    SubTitleLabel.Size = UDim2.new(1, -80, 0, 14)
+    SubTitleLabel.Size = UDim2.new(1, -150, 0, 14)
     SubTitleLabel.Position = UDim2.new(0, 34, 0, 20)
     SubTitleLabel.BackgroundTransparency = 1
-    SubTitleLabel.Text = "Free Script Loader"
-    SubTitleLabel.TextColor3 = Color3.fromRGB(130, 135, 150)
+    SubTitleLabel.Text = Languages[CurrentLang].Subtitle
+    SubTitleLabel.TextColor3 = Color3.fromRGB(140, 145, 162)
     SubTitleLabel.TextSize = 9.5
     SubTitleLabel.Font = Enum.Font.GothamMedium
     SubTitleLabel.TextXAlignment = Enum.TextXAlignment.Left
     SubTitleLabel.ZIndex = 32
     SubTitleLabel.Parent = HeaderBar
 
-    -- Nút đóng góc phải
+    -- Nút Đổi Ngôn Ngữ (Language Switcher)
+    local OpenLangBtn = Instance.new("TextButton")
+    OpenLangBtn.Size = UDim2.new(0, 78, 0, 26)
+    OpenLangBtn.Position = UDim2.new(1, -112, 0.5, -13)
+    OpenLangBtn.BackgroundColor3 = Color3.fromRGB(25, 27, 36)
+    OpenLangBtn.Text = Languages[CurrentLang].LangBtnText
+    OpenLangBtn.TextColor3 = Color3.fromRGB(196, 181, 253)
+    OpenLangBtn.TextSize = 11
+    OpenLangBtn.Font = Enum.Font.GothamBold
+    OpenLangBtn.AutoButtonColor = false
+    OpenLangBtn.ZIndex = 32
+    OpenLangBtn.Parent = HeaderBar
+    Instance.new("UICorner", OpenLangBtn).CornerRadius = UDim.new(0, 8)
+    local LangStroke = Instance.new("UIStroke", OpenLangBtn)
+    LangStroke.Color = Color3.fromRGB(139, 92, 246)
+    LangStroke.Thickness = 1
+
+    -- Nút Đóng Giao Diện
     local CloseBtn = Instance.new("TextButton")
-    CloseBtn.Size = UDim2.new(0, 24, 0, 24)
-    CloseBtn.Position = UDim2.new(1, -24, 0.5, -12)
-    CloseBtn.BackgroundColor3 = Color3.fromRGB(26, 28, 36)
+    CloseBtn.Size = UDim2.new(0, 26, 0, 26)
+    CloseBtn.Position = UDim2.new(1, -26, 0.5, -13)
+    CloseBtn.BackgroundColor3 = Color3.fromRGB(25, 27, 36)
     CloseBtn.Text = "✕"
-    CloseBtn.TextColor3 = Color3.fromRGB(150, 155, 170)
-    CloseBtn.TextSize = 10
+    CloseBtn.TextColor3 = Color3.fromRGB(156, 163, 175)
+    CloseBtn.TextSize = 11
     CloseBtn.Font = Enum.Font.GothamBold
     CloseBtn.AutoButtonColor = false
     CloseBtn.ZIndex = 32
     CloseBtn.Parent = HeaderBar
-    Instance.new("UICorner", CloseBtn).CornerRadius = UDim.new(0, 6)
+    Instance.new("UICorner", CloseBtn).CornerRadius = UDim.new(0, 8)
 
-    -- LOGO TRUNG TÂM NRL (THEO CHUẨN ẢNH)
+    -- LOGO TRUNG TÂM NRL (KÍNH TỐI BO GÓC)
     local CenterLogoBox = Instance.new("Frame")
     CenterLogoBox.Size = UDim2.new(0, 56, 0, 56)
-    CenterLogoBox.Position = UDim2.new(0.5, -28, 0, 54)
-    CenterLogoBox.BackgroundColor3 = Color3.fromRGB(24, 25, 33)
+    CenterLogoBox.Position = UDim2.new(0.5, -28, 0, 52)
+    CenterLogoBox.BackgroundColor3 = Color3.fromRGB(22, 24, 32)
     CenterLogoBox.ZIndex = 31
     CenterLogoBox.Parent = MainFrame
     Instance.new("UICorner", CenterLogoBox).CornerRadius = UDim.new(0, 16)
     local CenterLogoStroke = Instance.new("UIStroke", CenterLogoBox)
-    CenterLogoStroke.Color = Color3.fromRGB(45, 48, 62)
-    CenterLogoStroke.Thickness = 1.2
+    CenterLogoStroke.Color = Color3.fromRGB(48, 52, 68)
+    CenterLogoStroke.Thickness = 1.4
 
     local CenterLogoTxt = Instance.new("TextLabel")
     CenterLogoTxt.Size = UDim2.new(1, 0, 1, 0)
@@ -455,21 +520,21 @@ OpenKeySystemUI = function()
     -- DÒNG CHỮ TIÊU ĐỀ TRUNG TÂM
     local CenterTitle = Instance.new("TextLabel")
     CenterTitle.Size = UDim2.new(1, -30, 0, 20)
-    CenterTitle.Position = UDim2.new(0, 15, 0, 116)
+    CenterTitle.Position = UDim2.new(0, 15, 0, 114)
     CenterTitle.BackgroundTransparency = 1
-    CenterTitle.Text = "Nasi Rendang LUA Free Script"
-    CenterTitle.TextColor3 = Color3.fromRGB(245, 247, 250)
-    CenterTitle.TextSize = 13
+    CenterTitle.Text = Languages[CurrentLang].CenterTitle
+    CenterTitle.TextColor3 = Color3.fromRGB(248, 250, 252)
+    CenterTitle.TextSize = 13.5
     CenterTitle.Font = Enum.Font.GothamBlack
     CenterTitle.ZIndex = 31
     CenterTitle.Parent = MainFrame
 
     local CenterSub = Instance.new("TextLabel")
     CenterSub.Size = UDim2.new(1, -30, 0, 16)
-    CenterSub.Position = UDim2.new(0, 15, 0, 136)
+    CenterSub.Position = UDim2.new(0, 15, 0, 134)
     CenterSub.BackgroundTransparency = 1
-    CenterSub.Text = "in game: Lấy trộm một quả trứng"
-    CenterSub.TextColor3 = Color3.fromRGB(130, 135, 150)
+    CenterSub.Text = Languages[CurrentLang].CenterSub
+    CenterSub.TextColor3 = Color3.fromRGB(148, 155, 172)
     CenterSub.TextSize = 10
     CenterSub.Font = Enum.Font.GothamMedium
     CenterSub.ZIndex = 31
@@ -478,11 +543,11 @@ OpenKeySystemUI = function()
     -- Ô NHẬP KEY (PASTE YOUR KEY)
     local InputBox = Instance.new("TextBox")
     InputBox.Size = UDim2.new(1, -36, 0, 38)
-    InputBox.Position = UDim2.new(0, 18, 0, 162)
-    InputBox.BackgroundColor3 = Color3.fromRGB(24, 25, 33)
+    InputBox.Position = UDim2.new(0, 18, 0, 158)
+    InputBox.BackgroundColor3 = Color3.fromRGB(22, 24, 32)
     InputBox.TextColor3 = Color3.fromRGB(255, 255, 255)
-    InputBox.PlaceholderColor3 = Color3.fromRGB(110, 115, 130)
-    InputBox.PlaceholderText = "Paste your key (Standard / Lifetime)"
+    InputBox.PlaceholderColor3 = Color3.fromRGB(115, 122, 140)
+    InputBox.PlaceholderText = Languages[CurrentLang].Placeholder
     InputBox.Text = ""
     InputBox.TextSize = 11.5
     InputBox.Font = Enum.Font.GothamMedium
@@ -491,23 +556,22 @@ OpenKeySystemUI = function()
     InputBox.Parent = MainFrame
     Instance.new("UICorner", InputBox).CornerRadius = UDim.new(0, 10)
     local InputStroke = Instance.new("UIStroke", InputBox)
-    InputStroke.Color = Color3.fromRGB(38, 41, 52)
+    InputStroke.Color = Color3.fromRGB(42, 45, 58)
 
-    -- HÀNG NÚT: GET KEY & CHECK KEY (ĐÃ BỎ NÚT GOLD VÀ DISCORD)
+    -- HÀNG NÚT: GET KEY & CHECK KEY
     local ButtonsRow = Instance.new("Frame")
-    ButtonsRow.Size = UDim2.new(1, -36, 0, 42)
-    ButtonsRow.Position = UDim2.new(0, 18, 0, 210)
+    ButtonsRow.Size = UDim2.new(1, -36, 0, 40)
+    ButtonsRow.Position = UDim2.new(0, 18, 0, 204)
     ButtonsRow.BackgroundTransparency = 1
     ButtonsRow.ZIndex = 31
     ButtonsRow.Parent = MainFrame
 
-    -- NÚT 1: GET KEY (Tông xám tối thanh lịch)
     local GetKeyBtn = Instance.new("TextButton")
     GetKeyBtn.Size = UDim2.new(0.5, -6, 1, 0)
     GetKeyBtn.Position = UDim2.new(0, 0, 0, 0)
-    GetKeyBtn.BackgroundColor3 = Color3.fromRGB(26, 28, 36)
-    GetKeyBtn.Text = "GET KEY"
-    GetKeyBtn.TextColor3 = Color3.fromRGB(220, 225, 235)
+    GetKeyBtn.BackgroundColor3 = Color3.fromRGB(24, 26, 35)
+    GetKeyBtn.Text = Languages[CurrentLang].GetKey
+    GetKeyBtn.TextColor3 = Color3.fromRGB(225, 230, 240)
     GetKeyBtn.TextSize = 11.5
     GetKeyBtn.Font = Enum.Font.GothamBlack
     GetKeyBtn.AutoButtonColor = false
@@ -515,14 +579,13 @@ OpenKeySystemUI = function()
     GetKeyBtn.Parent = ButtonsRow
     Instance.new("UICorner", GetKeyBtn).CornerRadius = UDim.new(0, 10)
     local GetKeyStroke = Instance.new("UIStroke", GetKeyBtn)
-    GetKeyStroke.Color = Color3.fromRGB(45, 48, 62)
+    GetKeyStroke.Color = Color3.fromRGB(50, 54, 70)
 
-    -- NÚT 2: CHECK KEY (Phủ màu tím phát quang như ảnh mẫu)
     local CheckKeyBtn = Instance.new("TextButton")
     CheckKeyBtn.Size = UDim2.new(0.5, -6, 1, 0)
     CheckKeyBtn.Position = UDim2.new(0.5, 6, 0, 0)
-    CheckKeyBtn.BackgroundColor3 = Color3.fromRGB(46, 28, 70)
-    CheckKeyBtn.Text = "CHECK KEY"
+    CheckKeyBtn.BackgroundColor3 = Color3.fromRGB(55, 35, 88)
+    CheckKeyBtn.Text = Languages[CurrentLang].CheckKey
     CheckKeyBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
     CheckKeyBtn.TextSize = 11.5
     CheckKeyBtn.Font = Enum.Font.GothamBlack
@@ -534,20 +597,170 @@ OpenKeySystemUI = function()
     CheckStroke.Color = Color3.fromRGB(139, 92, 246)
     CheckStroke.Thickness = 1.4
 
-    -- BANNER THÔNG BÁO TRẠNG THÁI NHỎ GỌN DƯỚI CÙNG
+    -- ⭐ KHUNG THÔNG BÁO LƯU Ý MỚI THEO YÊU CẦU ⭐
+    local NoticeCard = Instance.new("Frame")
+    NoticeCard.Size = UDim2.new(1, -36, 0, 68)
+    NoticeCard.Position = UDim2.new(0, 18, 0, 254)
+    NoticeCard.BackgroundColor3 = Color3.fromRGB(20, 22, 30)
+    NoticeCard.ZIndex = 31
+    NoticeCard.Parent = MainFrame
+    Instance.new("UICorner", NoticeCard).CornerRadius = UDim.new(0, 10)
+    local NoticeStroke = Instance.new("UIStroke", NoticeCard)
+    NoticeStroke.Color = Color3.fromRGB(38, 42, 56)
+
+    local NoticeText = Instance.new("TextLabel")
+    NoticeText.Size = UDim2.new(1, -16, 1, -10)
+    NoticeText.Position = UDim2.new(0, 8, 0, 5)
+    NoticeText.BackgroundTransparency = 1
+    NoticeText.Text = Languages[CurrentLang].Notice
+    NoticeText.TextColor3 = Color3.fromRGB(216, 180, 254)
+    NoticeText.TextSize = 10.5
+    NoticeText.Font = Enum.Font.GothamMedium
+    NoticeText.TextWrapped = true
+    NoticeText.TextYAlignment = Enum.TextYAlignment.Center
+    NoticeText.TextXAlignment = Enum.TextXAlignment.Left
+    NoticeText.ZIndex = 32
+    NoticeText.Parent = NoticeCard
+
+    -- Dòng trạng thái nhỏ dưới cùng (dùng khi bấm Get/Check)
     local StatusMsg = Instance.new("TextLabel")
-    StatusMsg.Size = UDim2.new(1, -36, 0, 24)
-    StatusMsg.Position = UDim2.new(0, 18, 0, 264)
+    StatusMsg.Size = UDim2.new(1, -36, 0, 22)
+    StatusMsg.Position = UDim2.new(0, 18, 0, 330)
     StatusMsg.BackgroundTransparency = 1
-    StatusMsg.Text = "⏱ Hạn dùng: 24 tiếng kể từ khi kích hoạt"
-    StatusMsg.TextColor3 = Color3.fromRGB(120, 125, 140)
-    StatusMsg.TextSize = 10
+    StatusMsg.Text = "System Version: 1.2 · Security Protocol Active"
+    StatusMsg.TextColor3 = Color3.fromRGB(100, 105, 120)
+    StatusMsg.TextSize = 9.5
     StatusMsg.Font = Enum.Font.GothamMedium
     StatusMsg.ZIndex = 31
     StatusMsg.Parent = MainFrame
     -- =========================================================================
---   💠 KEY STEAM NASI RENDANG HUB - PHIÊN BẢN CHUẨN GIAO DIỆN (PHẦN 4/4) 💠
+--   💠 KEY STEAM NASI RENDANG HUB - PRO EDITION (PHẦN 4/4) 💠
 -- =========================================================================
+
+    -- MODAL CHỌN NGÔN NGỮ (TIẾNG VIỆT & ENGLISH)
+    local LangModal = Instance.new("Frame")
+    LangModal.Name = "LangModal"
+    LangModal.Size = UDim2.new(1, 0, 1, 0)
+    LangModal.Position = UDim2.new(0, 0, 1, 0)
+    LangModal.BackgroundColor3 = Color3.fromRGB(14, 15, 20)
+    LangModal.BackgroundTransparency = 0.02
+    LangModal.ZIndex = 40
+    LangModal.Parent = MainFrame
+    Instance.new("UICorner", LangModal).CornerRadius = UDim.new(0, 18)
+
+    local ModalTitle = Instance.new("TextLabel")
+    ModalTitle.Size = UDim2.new(1, -60, 0, 30)
+    ModalTitle.Position = UDim2.new(0, 20, 0, 18)
+    ModalTitle.BackgroundTransparency = 1
+    ModalTitle.Text = Languages[CurrentLang].SelectLangTitle
+    ModalTitle.TextColor3 = Color3.fromRGB(196, 181, 253)
+    ModalTitle.TextSize = 12
+    ModalTitle.Font = Enum.Font.GothamBlack
+    ModalTitle.TextXAlignment = Enum.TextXAlignment.Left
+    ModalTitle.ZIndex = 41
+    ModalTitle.Parent = LangModal
+
+    local CloseModalBtn = Instance.new("TextButton")
+    CloseModalBtn.Size = UDim2.new(0, 28, 0, 28)
+    CloseModalBtn.Position = UDim2.new(1, -40, 0, 18)
+    CloseModalBtn.BackgroundColor3 = Color3.fromRGB(28, 30, 40)
+    CloseModalBtn.Text = "✕"
+    CloseModalBtn.TextColor3 = Color3.fromRGB(239, 68, 68)
+    CloseModalBtn.TextSize = 12
+    CloseModalBtn.Font = Enum.Font.GothamBold
+    CloseModalBtn.ZIndex = 41
+    CloseModalBtn.Parent = LangModal
+    Instance.new("UICorner", CloseModalBtn).CornerRadius = UDim.new(0, 6)
+
+    local LangList = Instance.new("Frame")
+    LangList.Size = UDim2.new(1, -40, 0, 150)
+    LangList.Position = UDim2.new(0, 20, 0, 65)
+    LangList.BackgroundTransparency = 1
+    LangList.ZIndex = 41
+    LangList.Parent = LangModal
+
+    local OptViBtn = Instance.new("TextButton")
+    OptViBtn.Size = UDim2.new(1, 0, 0, 56)
+    OptViBtn.BackgroundColor3 = Color3.fromRGB(24, 20, 36)
+    OptViBtn.Text = "🇻🇳  Tiếng Việt (Vietnamese)  ✓"
+    OptViBtn.TextColor3 = Color3.fromRGB(196, 181, 253)
+    OptViBtn.TextSize = 13
+    OptViBtn.Font = Enum.Font.GothamBlack
+    OptViBtn.ZIndex = 42
+    OptViBtn.AutoButtonColor = false
+    OptViBtn.Parent = LangList
+    Instance.new("UICorner", OptViBtn).CornerRadius = UDim.new(0, 12)
+    local OptViStroke = Instance.new("UIStroke", OptViBtn)
+    OptViStroke.Color = Color3.fromRGB(139, 92, 246)
+    OptViStroke.Thickness = 1.5
+
+    local OptEnBtn = Instance.new("TextButton")
+    OptEnBtn.Size = UDim2.new(1, 0, 0, 56)
+    OptEnBtn.Position = UDim2.new(0, 0, 0, 68)
+    OptEnBtn.BackgroundColor3 = Color3.fromRGB(20, 22, 30)
+    OptEnBtn.Text = "🇺🇸  English (Global)"
+    OptEnBtn.TextColor3 = Color3.fromRGB(148, 155, 172)
+    OptEnBtn.TextSize = 13
+    OptEnBtn.Font = Enum.Font.GothamMedium
+    OptEnBtn.ZIndex = 42
+    OptEnBtn.AutoButtonColor = false
+    OptEnBtn.Parent = LangList
+    Instance.new("UICorner", OptEnBtn).CornerRadius = UDim.new(0, 12)
+    local OptEnStroke = Instance.new("UIStroke", OptEnBtn)
+    OptEnStroke.Color = Color3.fromRGB(42, 45, 58)
+
+    local function SetLanguage(code)
+        CurrentLang = code
+        local data = Languages[code]
+        OpenLangBtn.Text = data.LangBtnText
+        TitleLabel.Text = data.Title
+        SubTitleLabel.Text = data.Subtitle
+        CenterTitle.Text = data.CenterTitle
+        CenterSub.Text = data.CenterSub
+        InputBox.PlaceholderText = data.Placeholder
+        GetKeyBtn.Text = data.GetKey
+        CheckKeyBtn.Text = data.CheckKey
+        NoticeText.Text = data.Notice
+        ModalTitle.Text = data.SelectLangTitle
+
+        if code == "VI" then
+            OptViBtn.Text = "🇻🇳  Tiếng Việt (Vietnamese)  ✓"
+            OptViBtn.TextColor3 = Color3.fromRGB(196, 181, 253)
+            OptViBtn.Font = Enum.Font.GothamBlack
+            OptViStroke.Color = Color3.fromRGB(139, 92, 246)
+            OptViBtn.BackgroundColor3 = Color3.fromRGB(24, 20, 36)
+
+            OptEnBtn.Text = "🇺🇸  English (Global)"
+            OptEnBtn.TextColor3 = Color3.fromRGB(148, 155, 172)
+            OptEnBtn.Font = Enum.Font.GothamMedium
+            OptEnStroke.Color = Color3.fromRGB(42, 45, 58)
+            OptEnBtn.BackgroundColor3 = Color3.fromRGB(20, 22, 30)
+        else
+            OptEnBtn.Text = "🇺🇸  English (Global)  ✓"
+            OptEnBtn.TextColor3 = Color3.fromRGB(196, 181, 253)
+            OptEnBtn.Font = Enum.Font.GothamBlack
+            OptEnStroke.Color = Color3.fromRGB(139, 92, 246)
+            OptEnBtn.BackgroundColor3 = Color3.fromRGB(24, 20, 36)
+
+            OptViBtn.Text = "🇻🇳  Tiếng Việt (Vietnamese)"
+            OptViBtn.TextColor3 = Color3.fromRGB(148, 155, 172)
+            OptViBtn.Font = Enum.Font.GothamMedium
+            OptViStroke.Color = Color3.fromRGB(42, 45, 58)
+            OptViBtn.BackgroundColor3 = Color3.fromRGB(20, 22, 30)
+        end
+    end
+
+    local function OpenLangModal()
+        TweenService:Create(LangModal, TweenInfo.new(0.25, Enum.EasingStyle.Quart, Enum.EasingDirection.Out), { Position = UDim2.new(0, 0, 0, 0) }):Play()
+    end
+    local function CloseLangModal()
+        TweenService:Create(LangModal, TweenInfo.new(0.25, Enum.EasingStyle.Quart, Enum.EasingDirection.In), { Position = UDim2.new(0, 0, 1, 0) }):Play()
+    end
+
+    OpenLangBtn.MouseButton1Click:Connect(function() PlayDeepBounce(OpenLangBtn); OpenLangModal() end)
+    CloseModalBtn.MouseButton1Click:Connect(function() PlayDeepBounce(CloseModalBtn); CloseLangModal() end)
+    OptViBtn.MouseButton1Click:Connect(function() PlayDeepBounce(OptViBtn); SetLanguage("VI"); task.wait(0.15); CloseLangModal() end)
+    OptEnBtn.MouseButton1Click:Connect(function() PlayDeepBounce(OptEnBtn); SetLanguage("EN"); task.wait(0.15); CloseLangModal() end)
 
     -- Animation mở giao diện
     MainFrame.BackgroundTransparency = 1
@@ -555,7 +768,6 @@ OpenKeySystemUI = function()
     TweenService:Create(MainFrame, TweenInfo.new(0.35, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), { BackgroundTransparency = 0 }):Play()
     TweenService:Create(MainScale, TweenInfo.new(0.45, Enum.EasingStyle.Back, Enum.EasingDirection.Out), { Scale = 1 }):Play()
 
-    -- Bấm đóng giao diện
     CloseBtn.MouseButton1Click:Connect(function()
         PlayDeepBounce(CloseBtn)
         TweenService:Create(MainScale, TweenInfo.new(0.25, Enum.EasingStyle.Quad, Enum.EasingDirection.In), { Scale = 0.4 }):Play()
@@ -563,7 +775,7 @@ OpenKeySystemUI = function()
         ScreenGui:Destroy()
     end)
 
-    -- Sự kiện bấm nút GET KEY (Copy link)
+    -- Sự kiện bấm nút GET KEY
     GetKeyBtn.MouseButton1Click:Connect(function()
         PlayDeepBounce(GetKeyBtn)
         if setclipboard then setclipboard(KeyUrl) elseif toclipboard then toclipboard(KeyUrl) end
@@ -571,29 +783,29 @@ OpenKeySystemUI = function()
         GetKeyBtn.Text = "COPIED LINK!"
         GetKeyBtn.BackgroundColor3 = Color3.fromRGB(30, 48, 38)
         GetKeyStroke.Color = Color3.fromRGB(52, 211, 153)
-        StatusMsg.Text = "📋 Đã sao chép link nhận key vào bộ nhớ tạm!"
+        StatusMsg.Text = Languages[CurrentLang].CopiedLink
         StatusMsg.TextColor3 = Color3.fromRGB(52, 211, 153)
 
         task.delay(2.5, function()
             if GetKeyBtn and GetKeyBtn.Parent then
-                GetKeyBtn.Text = "GET KEY"
-                GetKeyBtn.BackgroundColor3 = Color3.fromRGB(26, 28, 36)
-                GetKeyStroke.Color = Color3.fromRGB(45, 48, 62)
-                StatusMsg.Text = "⏱ Hạn dùng: 24 tiếng kể từ khi kích hoạt"
-                StatusMsg.TextColor3 = Color3.fromRGB(120, 125, 140)
+                GetKeyBtn.Text = Languages[CurrentLang].GetKey
+                GetKeyBtn.BackgroundColor3 = Color3.fromRGB(24, 26, 35)
+                GetKeyStroke.Color = Color3.fromRGB(50, 54, 70)
+                StatusMsg.Text = "System Version: 1.2 · Security Protocol Active"
+                StatusMsg.TextColor3 = Color3.fromRGB(100, 105, 120)
             end
         end)
     end)
 
-    -- Sự kiện bấm nút CHECK KEY (Kích hoạt bản quyền)
+    -- Sự kiện bấm nút CHECK KEY
     local isChecking = false
     CheckKeyBtn.MouseButton1Click:Connect(function()
         if isChecking then return end
         isChecking = true
         PlayDeepBounce(CheckKeyBtn)
 
-        CheckKeyBtn.Text = "CHECKING..."
-        StatusMsg.Text = "⏳ Đang xác thực thông tin bản quyền trên hệ thống..."
+        CheckKeyBtn.Text = Languages[CurrentLang].Checking
+        StatusMsg.Text = Languages[CurrentLang].CheckingMsg
         StatusMsg.TextColor3 = Color3.fromRGB(196, 181, 253)
 
         task.wait(0.45)
@@ -605,7 +817,7 @@ OpenKeySystemUI = function()
             CheckKeyBtn.Text = "SUCCESS"
             CheckKeyBtn.BackgroundColor3 = Color3.fromRGB(22, 101, 52)
             CheckStroke.Color = Color3.fromRGB(74, 222, 128)
-            StatusMsg.Text = "✔ Xác thực thành công! Đang khởi chạy script..."
+            StatusMsg.Text = Languages[CurrentLang].Success
             StatusMsg.TextColor3 = Color3.fromRGB(74, 222, 128)
 
             RemoveScreenLockdown()
@@ -617,13 +829,13 @@ OpenKeySystemUI = function()
             ScreenGui:Destroy()
         else
             isChecking = false
-            CheckKeyBtn.Text = "CHECK KEY"
-            StatusMsg.Text = "✖ Mã Key không chính xác hoặc đã hết hạn!"
+            CheckKeyBtn.Text = Languages[CurrentLang].CheckKey
+            StatusMsg.Text = Languages[CurrentLang].Error
             StatusMsg.TextColor3 = Color3.fromRGB(239, 68, 68)
 
             InputStroke.Color = Color3.fromRGB(239, 68, 68)
             task.wait(0.6)
-            InputStroke.Color = Color3.fromRGB(38, 41, 52)
+            InputStroke.Color = Color3.fromRGB(42, 45, 58)
         end
     end)
 end
