@@ -1,0 +1,774 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Nasi Rendang Hub - Freemium V2</title>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;600;700;800;900&family=JetBrains+Mono:wght@600;700;800&family=Space+Grotesk:wght@600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Plus Jakarta Sans', -apple-system, sans-serif;
+            -webkit-tap-highlight-color: transparent;
+            user-select: none;
+        }
+
+        body {
+            background-color: #05070d;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 16px;
+            overflow-x: hidden;
+            position: relative;
+            background-image: 
+                radial-gradient(circle at 50% -20%, rgba(0, 242, 254, 0.25) 0%, transparent 60%),
+                radial-gradient(circle at 100% 80%, rgba(112, 0, 255, 0.2) 0%, transparent 50%),
+                radial-gradient(circle at 0% 90%, rgba(0, 255, 135, 0.12) 0%, transparent 50%);
+        }
+
+        /* Lưới Cyber Grid nền mờ ảo */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background-size: 40px 40px;
+            background-image: 
+                linear-gradient(to right, rgba(255, 255, 255, 0.02) 1px, transparent 1px),
+                linear-gradient(to bottom, rgba(255, 255, 255, 0.02) 1px, transparent 1px);
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        /* Ambient Glow Blobs */
+        .ambient-glow {
+            position: fixed;
+            width: 380px;
+            height: 380px;
+            border-radius: 50%;
+            filter: blur(120px);
+            opacity: 0.35;
+            pointer-events: none;
+            z-index: 0;
+        }
+        .glow-1 { top: -60px; left: -60px; background: #00f2fe; }
+        .glow-2 { bottom: -60px; right: -60px; background: #7000ff; }
+
+        /* Màn Hình Từ Chối Truy Cập */
+        .denied-container {
+            width: 100%;
+            max-width: 420px;
+            text-align: center;
+            padding: 40px 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            z-index: 20;
+            animation: fadeIn 0.4s ease-out;
+        }
+
+        .denied-title {
+            color: #ff3366;
+            font-size: 21px;
+            font-weight: 800;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            margin-bottom: 16px;
+            letter-spacing: -0.3px;
+            text-shadow: 0 0 15px rgba(255, 51, 102, 0.5);
+        }
+
+        .denied-desc {
+            color: #94a3b8;
+            font-size: 13.5px;
+            line-height: 1.6;
+            margin-bottom: 20px;
+            font-weight: 500;
+        }
+
+        .denied-action {
+            color: #00f2fe;
+            font-size: 13.5px;
+            font-weight: 700;
+            line-height: 1.6;
+        }
+
+        /* Khung Thẻ Chính Cyberpunk Card */
+        .hub-card {
+            width: 100%;
+            max-width: 416px;
+            background: linear-gradient(165deg, rgba(12, 17, 32, 0.95) 0%, rgba(6, 9, 18, 0.98) 100%);
+            border-radius: 26px;
+            padding: 24px 20px;
+            position: relative;
+            z-index: 10;
+            box-shadow: 0 25px 60px rgba(0, 0, 0, 0.9), 0 0 35px rgba(0, 242, 254, 0.18);
+            animation: cardEntrance 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+            border: 1px solid rgba(0, 242, 254, 0.3);
+        }
+
+        @keyframes cardEntrance {
+            from { opacity: 0; transform: translateY(20px) scale(0.96); }
+            to { opacity: 1; transform: translateY(0) scale(1); }
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: scale(0.95); }
+            to { opacity: 1; transform: scale(1); }
+        }
+
+        /* Viền Neon Đổi Màu */
+        .hub-card::before {
+            content: '';
+            position: absolute;
+            top: -2px; left: -2px; right: -2px; bottom: -2px;
+            background: linear-gradient(135deg, #00f2fe, #7000ff, #00ff87, #00f2fe);
+            border-radius: 28px;
+            z-index: -1;
+            opacity: 0.8;
+            background-size: 300% 300%;
+            animation: gradientBorder 6s ease infinite;
+        }
+
+        @keyframes gradientBorder {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        /* Logo Icon Công Nghệ */
+        .logo-wrapper {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 12px;
+        }
+        .logo-box {
+            width: 64px;
+            height: 64px;
+            background: linear-gradient(145deg, #0e1628, #070b14);
+            border-radius: 18px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 1.5px solid rgba(0, 242, 254, 0.6);
+            box-shadow: 0 0 25px rgba(0, 242, 254, 0.4), inset 0 0 15px rgba(112, 0, 255, 0.3);
+            font-size: 30px;
+            animation: floatIcon 3.5s ease-in-out infinite;
+        }
+        @keyframes floatIcon {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-5px); }
+        }
+
+        /* Tiêu Đề */
+        .hub-header {
+            text-align: center;
+            margin-bottom: 18px;
+        }
+        .hub-title {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 24px;
+            font-weight: 800;
+            background: linear-gradient(135deg, #ffffff 0%, #a5f3fc 50%, #00f2fe 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            letter-spacing: -0.5px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+        .hub-subtitle {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 12.5px;
+            color: #c084fc;
+            margin-top: 3px;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+        }
+
+        /* Status Row */
+        .status-row {
+            background: rgba(15, 23, 42, 0.7);
+            border: 1px solid rgba(0, 242, 254, 0.2);
+            border-radius: 14px;
+            padding: 10px 14px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 10px;
+        }
+        .status-label {
+            font-size: 12px;
+            color: #cbd5e1;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .status-badge {
+            background: rgba(0, 242, 254, 0.12);
+            color: #00f2fe;
+            border: 1px solid rgba(0, 242, 254, 0.4);
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-size: 11px;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .status-dot {
+            width: 7px;
+            height: 7px;
+            background: #00ff87;
+            border-radius: 50%;
+            box-shadow: 0 0 10px #00ff87;
+            animation: pulseDot 1.5s infinite;
+        }
+        @keyframes pulseDot {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.4; transform: scale(0.75); }
+        }
+
+        /* Grid 2 Cột */
+        .grid-info {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin-bottom: 16px;
+        }
+        .info-card {
+            background: rgba(15, 23, 42, 0.7);
+            border: 1px solid rgba(112, 0, 255, 0.25);
+            border-radius: 14px;
+            padding: 10px 12px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            font-size: 12px;
+        }
+        .info-card .label { color: #94a3b8; font-weight: 600; }
+        .info-card .val { font-weight: 800; color: #f8fafc; }
+        .info-card .val.highlight {
+            background: linear-gradient(135deg, #00f2fe, #7000ff);
+            color: #ffffff;
+            padding: 2px 7px;
+            border-radius: 6px;
+            font-size: 11px;
+            font-weight: 800;
+        }
+
+        /* Khung Hiển Thị Key */
+        .key-section {
+            background: rgba(10, 15, 28, 0.85);
+            border: 1px solid rgba(0, 242, 254, 0.3);
+            border-radius: 18px;
+            padding: 16px;
+            margin-bottom: 16px;
+            box-shadow: inset 0 0 20px rgba(0, 0, 0, 0.6);
+        }
+        .key-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 10px;
+        }
+        .key-title {
+            font-size: 12px;
+            font-weight: 800;
+            color: #a5f3fc;
+            letter-spacing: 0.5px;
+        }
+        .key-badge-status {
+            font-size: 10.5px;
+            font-weight: 700;
+            padding: 3px 8px;
+            border-radius: 6px;
+            background: rgba(148, 163, 184, 0.15);
+            color: #94a3b8;
+            border: 1px solid rgba(148, 163, 184, 0.3);
+            transition: all 0.3s;
+        }
+        .key-badge-status.active {
+            background: rgba(0, 242, 254, 0.15);
+            color: #00f2fe;
+            border-color: rgba(0, 242, 254, 0.5);
+        }
+
+        .key-display-box {
+            background: #070a12;
+            border: 1.5px solid #1e293b;
+            border-radius: 12px;
+            padding: 12px 14px;
+            text-align: center;
+            margin-bottom: 12px;
+            transition: all 0.35s ease;
+        }
+        .key-display-box.unlocked {
+            border-color: #00f2fe;
+            background: #0c1424;
+            box-shadow: 0 0 25px rgba(0, 242, 254, 0.35);
+        }
+        .key-text {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 13.5px;
+            font-weight: 800;
+            color: #64748b;
+            letter-spacing: 1px;
+            transition: all 0.3s;
+            word-break: break-all;
+        }
+        .key-text.unlocked {
+            color: #67e8f9;
+            text-shadow: 0 0 12px rgba(0, 242, 254, 0.8);
+        }
+
+        /* Nút Bấm Cyan-Purple Gradient */
+        .btn-action {
+            width: 100%;
+            height: 46px;
+            border: none;
+            border-radius: 12px;
+            font-size: 12.5px;
+            font-weight: 900;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+            background: linear-gradient(90deg, #00f2fe 0%, #4facfe 50%, #7000ff 100%);
+            color: #030712;
+            box-shadow: 0 4px 18px rgba(0, 242, 254, 0.4);
+        }
+        .btn-action:active { transform: scale(0.97); }
+        .btn-action.copied {
+            background: linear-gradient(90deg, #00ff87 0%, #60efff 100%);
+            color: #030712;
+            box-shadow: 0 4px 18px rgba(0, 255, 135, 0.45);
+        }
+
+        /* Khung Script V2 */
+        .script-section {
+            background: rgba(10, 15, 28, 0.85);
+            border: 1px solid rgba(112, 0, 255, 0.3);
+            border-radius: 18px;
+            padding: 14px 16px;
+            margin-bottom: 14px;
+        }
+        .script-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 8px;
+        }
+        .script-title {
+            font-size: 11.5px;
+            font-weight: 800;
+            color: #c084fc;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        .btn-copy-script {
+            background: none;
+            border: none;
+            color: #00f2fe;
+            font-size: 11px;
+            font-weight: 700;
+            cursor: pointer;
+            text-decoration: underline;
+            padding: 2px 4px;
+            transition: color 0.2s;
+        }
+        .btn-copy-script:hover { color: #a5f3fc; }
+
+        .script-code-box {
+            background: #070a12;
+            border: 1px solid #1e293b;
+            border-radius: 10px;
+            padding: 10px 12px;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 10px;
+            color: #e2e8f0;
+            line-height: 1.45;
+            word-break: break-all;
+            user-select: all;
+        }
+        .script-code-box .keyword { color: #f43f5e; }
+        .script-code-box .string { color: #38bdf8; }
+
+        /* Nút Bật Tắt Âm Thanh */
+        .sfx-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 4px 4px 12px 4px;
+        }
+        .sfx-label {
+            font-size: 11.5px;
+            color: #94a3b8;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .sfx-toggle-btn {
+            background: rgba(15, 23, 42, 0.8);
+            border: 1px solid rgba(0, 242, 254, 0.3);
+            color: #e2e8f0;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 11px;
+            font-weight: 700;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            transition: all 0.2s;
+        }
+        .sfx-toggle-btn.active {
+            border-color: #00f2fe;
+            color: #00f2fe;
+            box-shadow: 0 0 12px rgba(0, 242, 254, 0.35);
+        }
+
+        .footer-note {
+            text-align: center;
+            font-size: 11px;
+            color: #64748b;
+            font-weight: 600;
+        }
+
+        /* Toast Thông Báo */
+        .toast-notification {
+            position: fixed;
+            bottom: -90px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: linear-gradient(135deg, #0b1329, #060a17);
+            border: 1.5px solid #00f2fe;
+            color: #f8fafc;
+            padding: 12px 22px;
+            border-radius: 30px;
+            font-size: 12px;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            box-shadow: 0 10px 35px rgba(0, 242, 254, 0.35);
+            z-index: 100;
+            transition: all 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
+            pointer-events: none;
+            white-space: nowrap;
+        }
+        .toast-notification.show { bottom: 24px; }
+    </style>
+</head>
+<body>
+
+    <div class="ambient-glow glow-1"></div>
+    <div class="ambient-glow glow-2"></div>
+
+    <!-- MÀN HÌNH TỪ CHỐI TRUY CẬP -->
+    <div class="denied-container" id="accessDeniedScreen" style="display: none;">
+        <h1 class="denied-title">⚠️ ACCESS DENIED</h1>
+        <p class="denied-desc">Liên kết đã hết hạn hoặc bạn đang truy cập từ Lịch sử / Bookmark.</p>
+        <p class="denied-action">Vui lòng mở lại Roblox Script và bấm "LẤY KEY NGAY" để vượt link!</p>
+    </div>
+
+    <!-- GIAO DIỆN CHÍNH NASI RENDANG HUB -->
+    <div class="hub-card" id="mainHubScreen" style="display: none;">
+        <div class="logo-wrapper">
+            <div class="logo-box">💠</div>
+        </div>
+
+        <div class="hub-header">
+            <div class="hub-title">Nasi Rendang Hub</div>
+            <div class="hub-subtitle">engine : freemium loaderv2</div>
+        </div>
+
+        <div class="status-row">
+            <div class="status-label">🔑 Key System Status:</div>
+            <div class="status-badge">
+                <div class="status-dot"></div>
+                SYSTEM ONLINE
+            </div>
+        </div>
+
+        <div class="grid-info">
+            <div class="info-card">
+                <span class="label">Auto Reset:</span>
+                <span class="val highlight">00:00 Daily</span>
+            </div>
+            <div class="info-card">
+                <span class="label">Timezone:</span>
+                <span class="val">GMT+7 (VN)</span>
+            </div>
+        </div>
+
+        <div class="key-section">
+            <div class="key-header">
+                <span class="key-title">TODAY LICENSE KEY:</span>
+                <span class="key-badge-status" id="keyBadgeStatus">Chưa nhận</span>
+            </div>
+
+            <div class="key-display-box" id="keyDisplayBox">
+                <div class="key-text" id="keyText">•••••••••••••••••••••••••••••</div>
+            </div>
+
+            <button class="btn-action" id="btnAction" onclick="handleKeyAction()">
+                <span id="btnIcon">⚡</span>
+                <span id="btnText">NHẬN KEY NGAY</span>
+            </button>
+        </div>
+
+        <div class="script-section">
+            <div class="script-header">
+                <span class="script-title">🚀 SCRIPT LOADER V2</span>
+                <button class="btn-copy-script" onclick="copyScriptCode()">Sao chép Loader</button>
+            </div>
+            <div class="script-code-box" id="scriptCode">
+                <span class="keyword">loadstring</span>(game:HttpGet(<span class="string">"https://raw.githubusercontent.com/ronnei/freemium/refs/heads/main/loaderv2.lua"</span>))()
+            </div>
+        </div>
+
+        <div class="sfx-row">
+            <div class="sfx-label">🔔 Hiệu ứng âm thanh SFX:</div>
+            <button class="sfx-toggle-btn active" id="sfxToggle" onclick="toggleSFX()">
+                <span id="sfxState">Bật 🟢</span>
+            </button>
+        </div>
+
+        <div class="footer-note">
+            Dán mã Key vào khung Script trong game để kích hoạt tự động!
+        </div>
+    </div>
+
+    <!-- Toast Thông Báo -->
+    <div class="toast-notification" id="toast">
+        <span id="toastIcon">💠</span>
+        <span id="toastMsg">Đã tạo thành công Key Nasi Rendang hôm nay!</span>
+    </div>
+        <script>
+        // =========================================================================
+        //  1. CƠ CHẾ XÁC THỰC MẬT KHẨU & CHỐNG LƯU LỊCH SỬ TRÌNH DUYỆT
+        // =========================================================================
+        const VALID_PASSWORDS = ["nasirendang", "ronnei2026", "freemium", "omg2026", "rendang2026"];
+        const urlParams = new URLSearchParams(window.location.search);
+        const pass = urlParams.get('pass');
+
+        // Dọn cache tránh xung đột phiên cũ
+        localStorage.removeItem("NasiRendang_Pass_Used");
+        localStorage.removeItem("RonneiPrime_Pass_Used");
+
+        if (pass && VALID_PASSWORDS.includes(pass)) {
+            // HỢP LỆ: Vừa vượt link thành công
+            document.getElementById('mainHubScreen').style.display = 'block';
+            document.getElementById('accessDeniedScreen').style.display = 'none';
+
+            // Xóa tham số ?pass=... khỏi thanh địa chỉ để ngăn lưu vào bookmark/history
+            window.history.replaceState({}, document.title, window.location.pathname);
+        } else {
+            // KHÔNG HỢP LỆ: F5 hoặc mở lại từ lịch sử
+            document.getElementById('accessDeniedScreen').style.display = 'flex';
+            document.getElementById('mainHubScreen').style.display = 'none';
+        }
+
+        // =========================================================================
+        //  2. HIỆU ỨNG ÂM THANH SFX (WEB AUDIO API)
+        // =========================================================================
+        let isKeyUnlocked = false;
+        let generatedKey = "";
+        let isSfxEnabled = true;
+
+        const AudioContext = window.AudioContext || window.webkitAudioContext;
+        let audioCtx = null;
+
+        function initAudio() {
+            if (!audioCtx) audioCtx = new AudioContext();
+            if (audioCtx.state === 'suspended') audioCtx.resume();
+        }
+
+        function playSound(type) {
+            if (!isSfxEnabled) return;
+            try {
+                initAudio();
+                const osc = audioCtx.createOscillator();
+                const gain = audioCtx.createGain();
+                osc.connect(gain);
+                gain.connect(audioCtx.destination);
+
+                const now = audioCtx.currentTime;
+
+                if (type === 'click') {
+                    osc.type = 'sine';
+                    osc.frequency.setValueAtTime(650, now);
+                    osc.frequency.exponentialRampToValueAtTime(300, now + 0.08);
+                    gain.gain.setValueAtTime(0.2, now);
+                    gain.gain.linearRampToValueAtTime(0, now + 0.08);
+                    osc.start(now);
+                    osc.stop(now + 0.08);
+                } else if (type === 'generate') {
+                    osc.type = 'sawtooth';
+                    osc.frequency.setValueAtTime(320, now);
+                    osc.frequency.linearRampToValueAtTime(950, now + 0.25);
+                    gain.gain.setValueAtTime(0.18, now);
+                    gain.gain.linearRampToValueAtTime(0, now + 0.25);
+                    osc.start(now);
+                    osc.stop(now + 0.25);
+                } else if (type === 'success') {
+                    osc.type = 'triangle';
+                    osc.frequency.setValueAtTime(587.33, now); // D5
+                    osc.frequency.setValueAtTime(739.99, now + 0.08); // F#5
+                    osc.frequency.setValueAtTime(880.00, now + 0.16); // A5
+                    osc.frequency.setValueAtTime(1174.66, now + 0.24); // D6
+                    gain.gain.setValueAtTime(0.22, now);
+                    gain.gain.linearRampToValueAtTime(0, now + 0.38);
+                    osc.start(now);
+                    osc.stop(now + 0.38);
+                }
+            } catch (e) {}
+        }
+
+        function toggleSFX() {
+            isSfxEnabled = !isSfxEnabled;
+            const btn = document.getElementById('sfxToggle');
+            const txt = document.getElementById('sfxState');
+            if (isSfxEnabled) {
+                btn.classList.add('active');
+                txt.innerText = "Bật 🟢";
+                playSound('click');
+            } else {
+                btn.classList.remove('active');
+                txt.innerText = "Tắt 🔴";
+            }
+        }
+
+        // =========================================================================
+        //  3. THUẬT TOÁN ĐỔI KEY: nasirendangfree-XXXX-YYYY-ZZZZ (GMT+7)
+        // =========================================================================
+        function getVietnamDate() {
+            const now = new Date();
+            const utc = now.getTime() + (now.getTimezoneOffset() * 60000);
+            return new Date(utc + (3600000 * 7));
+        }
+
+        function calculateTodayKey() {
+            const vnDate = getVietnamDate();
+            const day = vnDate.getDate();
+            const month = vnDate.getMonth() + 1;
+            const year = vnDate.getFullYear();
+
+            // Thuật toán mã hóa băm riêng cho Nasi Rendang
+            const val1 = (day * 4391 + month * 2803 + year * 79) % 65535;
+            const val2 = (day * 6719 + month * 5147 + year * 199) % 65535;
+            const val3 = (day * 3889 + month * 8191 + year * 313) % 65535;
+
+            const hex1 = val1.toString(16).toUpperCase().padStart(4, '0');
+            const hex2 = val2.toString(16).toUpperCase().padStart(4, '0');
+            const hex3 = val3.toString(16).toUpperCase().padStart(4, '0');
+
+            return `nasirendangfree-${hex1}-${hex2}-${hex3}`;
+        }
+
+        function copyToClipboard(text) {
+            if (navigator.clipboard && window.isSecureContext) {
+                return navigator.clipboard.writeText(text).catch(() => fallbackCopyText(text));
+            } else {
+                fallbackCopyText(text);
+                return Promise.resolve();
+            }
+        }
+
+        function fallbackCopyText(text) {
+            const textArea = document.createElement("textarea");
+            textArea.value = text;
+            textArea.style.position = "fixed";
+            textArea.style.left = "-999999px";
+            textArea.style.top = "-999999px";
+            document.body.appendChild(textArea);
+            textArea.focus();
+            textArea.select();
+            try { document.execCommand('copy'); } catch (err) {}
+            document.body.removeChild(textArea);
+        }
+
+        function showToast(msg, icon = '💠') {
+            const toast = document.getElementById('toast');
+            document.getElementById('toastMsg').innerText = msg;
+            document.getElementById('toastIcon').innerText = icon;
+            toast.classList.add('show');
+            setTimeout(() => toast.classList.remove('show'), 3000);
+        }
+
+        function handleKeyAction() {
+            const btn = document.getElementById('btnAction');
+            const btnIcon = document.getElementById('btnIcon');
+            const btnText = document.getElementById('btnText');
+            const keyText = document.getElementById('keyText');
+            const keyDisplayBox = document.getElementById('keyDisplayBox');
+            const badge = document.getElementById('keyBadgeStatus');
+
+            if (!isKeyUnlocked) {
+                playSound('generate');
+                btn.style.pointerEvents = 'none';
+                btnText.innerText = "AUTHENTICATING...";
+                btnIcon.innerText = "⏳";
+
+                setTimeout(() => {
+                    generatedKey = calculateTodayKey();
+                    isKeyUnlocked = true;
+
+                    keyText.innerText = generatedKey;
+                    keyText.classList.add('unlocked');
+                    keyDisplayBox.classList.add('unlocked');
+
+                    badge.innerText = "Đã lấy ✓";
+                    badge.classList.add('active');
+
+                    btnIcon.innerText = "📋";
+                    btnText.innerText = "SAO CHÉP MÃ KEY";
+                    btn.style.pointerEvents = 'auto';
+
+                    playSound('success');
+                    showToast("Đã cấp mã Key Nasi Rendang thành công!", "💠");
+                }, 450);
+            } else {
+                playSound('click');
+                copyToClipboard(generatedKey);
+                playSound('success');
+                btn.classList.add('copied');
+                btnIcon.innerText = "✔";
+                btnText.innerText = "ĐÃ SAO CHÉP MÃ KEY!";
+                showToast("Đã sao chép mã Key vào bộ nhớ tạm!", "📋");
+
+                setTimeout(() => {
+                    btn.classList.remove('copied');
+                    btnIcon.innerText = "📋";
+                    btnText.innerText = "SAO CHÉP MÃ KEY";
+                }, 2500);
+            }
+        }
+
+        function copyScriptCode() {
+            playSound('click');
+            const rawScript = 'loadstring(game:HttpGet("https://raw.githubusercontent.com/ronnei/freemium/refs/heads/main/loaderv2.lua"))()';
+            copyToClipboard(rawScript);
+            playSound('success');
+            showToast("Đã sao chép Loader V2 thành công!", "🚀");
+        }
+    </script>
+</body>
+</html>
